@@ -964,6 +964,13 @@ BlobImplBase::SetMutable(bool aMutable)
   return rv;
 }
 
+/* static */ uint64_t
+FileImplBase::NextSerialNumber()
+{
+  static Atomic<uint64_t> nextSerialNumber;
+  return nextSerialNumber++;
+}
+
 ////////////////////////////////////////////////////////////////////////////
 // BlobImplFile implementation
 

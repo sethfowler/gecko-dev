@@ -462,13 +462,18 @@ nsHostObjectProtocolHandler::Traverse(const nsACString& aUri,
 }
 
 static nsISupports*
+GetDataObjectForSpec(const nsACString& aSpec)
+{
+  DataInfo* info = GetDataInfo(aSpec);
+  return info ? info->mObject : nullptr;
+}
+
+static nsISupports*
 GetDataObject(nsIURI* aURI)
 {
   nsCString spec;
   aURI->GetSpec(spec);
-
-  DataInfo* info = GetDataInfo(spec);
-  return info ? info->mObject : nullptr;
+  return GetDataObjectForSpec(spec);
 }
 
 // -----------------------------------------------------------------------
@@ -632,6 +637,20 @@ NS_GetBlobForBlobURI(nsIURI* aURI, BlobImpl** aBlob)
   *aBlob = nullptr;
 
   nsCOMPtr<BlobImpl> blob = do_QueryInterface(GetDataObject(aURI));
+  if (!blob) {
+    return NS_ERROR_DOM_BAD_URI;
+  }
+
+  blob.forget(aBlob);
+  return NS_OK;
+}
+
+nsresult
+NS_GetBlobForBlobURISpec(const nsACString& aSpec, FileImpl** aBlob)
+{
+  *aBlob = nullptr;
+
+  nsCOMPtr<FileImpl> blob = do_QueryInterface(GetDataObjectForSpec(aSpec));
   if (!blob) {
     return NS_ERROR_DOM_BAD_URI;
   }
