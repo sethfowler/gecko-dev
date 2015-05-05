@@ -60,8 +60,10 @@ NS_IMPL_ISUPPORTS(imgRequest,
                   nsIInterfaceRequestor,
                   nsIAsyncVerifyRedirectCallback)
 
-imgRequest::imgRequest(imgLoader* aLoader)
+imgRequest::imgRequest(imgLoader* aLoader, const ImageCacheKey& aCacheKey)
  : mLoader(aLoader)
+ , mCacheKey(aCacheKey)
+ , mLoadId(nullptr)
  , mValidator(nullptr)
  , mInnerWindowId(0)
  , mCORSMode(imgIRequest::CORS_NONE)
@@ -121,6 +123,9 @@ imgRequest::Init(nsIURI *aURI,
   mRequest = aRequest;
   mChannel = aChannel;
   mTimedChannel = do_QueryInterface(mChannel);
+
+  MOZ_ASSERT(strcmp(mURI->Spec(), mCacheKey.Spec()) == 0,
+             "Image cache key and original URI should be the same");
 
   mLoadingPrincipal = aLoadingPrincipal;
   mCORSMode = aCORSMode;
