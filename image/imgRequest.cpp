@@ -124,6 +124,12 @@ imgRequest::Init(nsIURI *aURI,
   mChannel = aChannel;
   mTimedChannel = do_QueryInterface(mChannel);
 
+  printf_stderr("*** Original URI [%s]\n", mURI->Spec());
+
+  if (strcmp(mURI->Spec(), mCacheKey.Spec()) != 0) {
+    printf_stderr("*** Mismatch between cache key [%s] and original URI [%s]\n", mCacheKey.Spec(), mURI->Spec());
+  }
+
   MOZ_ASSERT(strcmp(mURI->Spec(), mCacheKey.Spec()) == 0,
              "Image cache key and original URI should be the same");
 

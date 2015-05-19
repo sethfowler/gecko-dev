@@ -2760,6 +2760,7 @@ imgCacheValidator::OnStartRequest(nsIRequest* aRequest, nsISupports* ctxt)
     }
 
     if (isFromCache && sameURI) {
+      printf_stderr("*** Successfully validated in imgCacheValidator::OnStartRequest\n");
       uint32_t count = mProxies.Count();
       for (int32_t i = count-1; i>=0; i--) {
         imgRequestProxy* proxy = static_cast<imgRequestProxy*>(mProxies[i]);
@@ -2821,6 +2822,7 @@ imgCacheValidator::OnStartRequest(nsIRequest* aRequest, nsISupports* ctxt)
   // We use originalURI here to fulfil the imgIRequest contract on GetURI.
   nsCOMPtr<nsIURI> originalURI;
   channel->GetOriginalURI(getter_AddRefs(originalURI));
+  printf_stderr("*** Init from imgCacheValidator::OnStartRequest\n");
   mNewRequest->Init(originalURI, uri, mHadInsecureRedirect, aRequest, channel,
                     mNewEntry, context, loadingPrincipal, corsmode, refpol);
 
